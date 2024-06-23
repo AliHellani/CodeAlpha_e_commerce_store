@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="style.css" />
+    <title>Add New Product</title>
+  </head>
+  <body>
+    <header class="header">
+      <div class="logo">
+        <img src="./images/logo.jpg" alt="logo" />
+      </div>
+      <nav class="navbar">
+        <ul>
+          <li><a href="index.html">Home</a></li>
+        </ul>
+      </nav>
+    </header>
+    <div class="product-form">
+      <h2>Add New Product</h2>
+      <form id="new-product-form" enctype="multipart/form-data">
+        <label for="p_name">Product Name:</label>
+        <input type="text" id="p_name" name="p_name" required />
+
+        <label for="p_image">Product Image:</label>
+        <input
+          type="file"
+          id="p_image"
+          name="p_image"
+          accept="image/png, image/jpg"
+          required
+        /><br /><br />
+
+        <label for="p_description">Description:</label>
+        <input type="text" id="p_description" name="p_description" required />
+
+        <label for="p_price">Price:</label>
+        <input type="number" id="p_price" name="p_price" required />
+
+        <label for="p_quantity">Quantity:</label>
+        <input type="number" id="p_quantity" name="p_quantity" required />
+
+        <button type="button" onclick="addNewProduct()">Submit</button>
+      </form>
+    </div>
+
+    <script>
+      async function addNewProduct() {
+        const form = document.getElementById("new-product-form");
+        const formData = new FormData(form);
+
+        try {
+          const res = await fetch("/products", {
+            method: "POST",
+            body: formData,
+          });
+
+          if (res.ok) {
+            form.reset();
+            Swal.fire({
+              icon: "success",
+              title: "Product Added Successfully",
+              showConfirmButton: false,
+              timer: 1500,
+            }).then(() => {
+              window.location.href = "index.html";
+            });
+          } else {
+            Swal.fire({
+              icon: "error",
+              title: "Failed to add new product",
+              text: res.statusText,
+            });
+          }
+        } catch (error) {
+          Swal.fire({
+            icon: "error",
+            title: "Error adding new product",
+            text: error.message,
+          });
+        }
+      }
+    </script>
+  </body>
+</html>
